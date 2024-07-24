@@ -82,7 +82,7 @@ int	create_threads(t_simulation *data)
 		data->philosopher[i].last_meal_time = get_time();
 		data->philosopher[i].left_fork = i; //tbd
 		data->philosopher[i].right_fork = (i + 1) % data->num_philo; //tbd
-		pthread_create(&data->philosopher[i].thread, NULL, routine, &data->philosopher[i]);
+		pthread_create(&data->philosopher[i].thread, NULL, routine, &data->philosopher[i]); //check if == 0
 		i++;
 	}
 	return (1);
