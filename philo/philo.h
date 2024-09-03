@@ -1,14 +1,16 @@
+#ifndef PHILOSOPHERS_H
+# define PHILOSOPHERS_H
 
-#include <stdio.h>
-#include <pthread.h>
+# include <stdio.h>
+# include <pthread.h>
 
 typedef struct	s_philosopher
 {
 	int		id;
 	int	times_eaten;
     long last_meal_time;
-	pthread_t left_fork;
-	pthread_t right_fork;
+	pthread_mutex_t left_fork;
+	pthread_mutex_t right_fork;
 	pthread_t thread;
 }				t_philosopher;
 
@@ -32,3 +34,5 @@ int	ft_atoi(const char *str);
 
 //free
 void	free_struct(t_simulation *data);
+
+#endif

@@ -80,8 +80,15 @@ int	create_threads(t_simulation *data)
 		data->philosopher[i].id = i;
 		data->philosopher[i].times_eaten = 0;
 		data->philosopher[i].last_meal_time = get_time();
-		data->philosopher[i].left_fork = i; //tbd
-		data->philosopher[i].right_fork = (i + 1) % data->num_philo; //tbd
+		data->philosopher[i].left_fork = data->forks[i]; //tbd
+		if (i + 1 == data->num_philo)
+		{
+			data->philosopher[i].right_fork = data->forks[0];
+		}
+		else
+		{
+			data->philosopher[i].right_fork = data->forks[i + 1];
+		}
 		pthread_create(&data->philosopher[i].thread, NULL, routine, &data->philosopher[i]); //check if == 0
 		i++;
 	}
@@ -109,6 +116,7 @@ int	init_simulation(t_simulation *data, int argc, char **argv)
 		printf("Error: malloc failed\n");
 		return (0);
 	}
+	create_threads(data);
 	//initialize forks??
 	// add error handling for atoi, if letters etc
 	if (argc == 6)
