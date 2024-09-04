@@ -55,6 +55,11 @@ for i from 0 to NUM_PHILOSOPHERS - 1:
 
 #include "philo.h"
 
+void think(t_philosopher *philo)
+{
+    printf("Philosopher %d is thinking\n", philo->id);
+}
+
 void	*routine(void *arg)
 {
 	t_philosopher	*philo;
@@ -62,7 +67,7 @@ void	*routine(void *arg)
 	philo = (t_philosopher *)arg;
 	while (1)
 	{
-		//think(philo->id);
+		think(philo);
 		//pick_up_forks(philo->id);
 		//eat(philo->id);
 		//put_down_forks(philo->id);
@@ -79,8 +84,9 @@ int	create_threads(t_simulation *data)
 	{
 		data->philosopher[i].id = i;
 		data->philosopher[i].times_eaten = 0;
-		data->philosopher[i].last_meal_time = get_time();
+		//data->philosopher[i].last_meal_time = get_time();
 		data->philosopher[i].left_fork = data->forks[i]; //tbd
+		//data->philosopher[i].right_fork = data->forks[(i + 1) % data->num_philo];
 		if (i + 1 == data->num_philo)
 		{
 			data->philosopher[i].right_fork = data->forks[0];
@@ -150,12 +156,13 @@ int	main(int argc, char **argv)
 			free(data);
 			//free_struct(data);
 			return (0);
-		}	
+		}
+		free_struct(data);
 	}
 	else
 	{
 		printf("Error: wrong number of arguments\n");
 	}
-	free_struct(data);
+	
 	return (0);
 }
