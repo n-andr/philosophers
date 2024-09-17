@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 NAME = philo
-SRC = main.c utils.c free.c
+SRC = main.c routine.c utils.c free.c
 OBJS = $(SRC:.c=.o)
 
 all: $(NAME)

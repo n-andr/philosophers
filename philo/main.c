@@ -52,112 +52,93 @@ function philosopher(philosopher_id):
 for i from 0 to NUM_PHILOSOPHERS - 1:
     start_thread(philosopher, i)
 */
-
 #include "philo.h"
 
-void think(t_philosopher *philo)
-{
-    printf("Philosopher %d is thinking\n", philo->id);
-}
-
-void	*routine(void *arg)
-{
-	t_philosopher	*philo;
-
-	philo = (t_philosopher *)arg;
-	while (1)
-	{
-		think(philo);
-		//pick_up_forks(philo->id);
-		//eat(philo->id);
-		//put_down_forks(philo->id);
-	}
-	return (NULL);
-}
-
-int	create_threads(t_simulation *data)
+int	create_philo_threads(t_simulation *sim)
 {
 	int	i;
 
 	i = 0;
-	while (i < data->num_philo)
+	while (i < sim->num_philo)
 	{
-		data->philosopher[i].id = i;
-		data->philosopher[i].times_eaten = 0;
-		//data->philosopher[i].last_meal_time = get_time();
-		data->philosopher[i].left_fork = data->forks[i]; //tbd
-		//data->philosopher[i].right_fork = data->forks[(i + 1) % data->num_philo];
-		if (i + 1 == data->num_philo)
+		sim->philosopher[i].id = i + 1;
+		sim->philosopher[i].times_eaten = 0;
+		sim->philosopher[i].last_meal_time = get_time();
+		sim->philosopher[i].sim = sim;
+		sim->philosopher[i].left_fork = sim->forks[i]; //tbd
+		//sim->philosopher[i].right_fork = sim->forks[(i + 1) % sim->num_philo];
+		if (i + 1 == sim->num_philo)
 		{
-			data->philosopher[i].right_fork = data->forks[0];
+			sim->philosopher[i].right_fork = sim->forks[0];
 		}
 		else
 		{
-			data->philosopher[i].right_fork = data->forks[i + 1];
+			sim->philosopher[i].right_fork = sim->forks[i + 1];
 		}
-		pthread_create(&data->philosopher[i].thread, NULL, routine, &data->philosopher[i]); //check if == 0
+		write_message("created", &sim->philosopher[i]);
+		pthread_create(&sim->philosopher[i].thread, NULL, routine, &sim->philosopher[i]); //check if == 0
 		i++;
 	}
 	return (1);
 }
 
-int	init_simulation(t_simulation *data, int argc, char **argv)
+int	init_simulation(t_simulation *sim, int argc, char **argv)
 {
 	int	i;
 
-	data->num_philo = ft_atoi(argv[1]);
-	data->time_to_die = ft_atoi(argv[2]);
-	data->time_to_eat = ft_atoi(argv[3]);
-	data->time_to_sleep = ft_atoi(argv[4]);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philo);
-	if (!data->forks)
+	sim->num_philo = ft_atoi(argv[1]);
+	sim->time_to_die = ft_atoi(argv[2]);
+	sim->time_to_eat = ft_atoi(argv[3]);
+	sim->time_to_sleep = ft_atoi(argv[4]);
+	sim->forks = malloc(sizeof(pthread_mutex_t) * sim->num_philo);
+	if (!sim->forks)
 	{
 		printf("Error: malloc failed\n");
 		return (0);
 	}
-	data->philosopher = malloc(sizeof(t_philosopher) * data->num_philo);
-	if (!data->philosopher)
+	sim->philosopher = malloc(sizeof(t_philosopher) * sim->num_philo);
+	if (!sim->philosopher)
 	{
-		free(data->forks);
+		free(sim->forks);
 		printf("Error: malloc failed\n");
 		return (0);
 	}
-	create_threads(data);
+	create_philo_threads(sim);
 	//initialize forks??
 	// add error handling for atoi, if letters etc
 	if (argc == 6)
-		data->must_eat_count = ft_atoi(argv[5]);
+		sim->must_eat_count = ft_atoi(argv[5]);
 	else
-		data->must_eat_count = -1;
+		sim->must_eat_count = -1;
 	i = 0;
-    while (i < data->num_philo)
+    while (i < sim->num_philo)
     {
-        pthread_mutex_init(&data->forks[i], NULL);
+        pthread_mutex_init(&sim->forks[i], NULL);
         i++;
     }
-    //pthread_mutex_init(&data->print_lock, NULL);
+    //pthread_mutex_init(&sim->print_lock, NULL);
 	return (1);
 }
 
 int	main(int argc, char **argv)
 {
-	t_simulation	*data; //maybe not a pointer
+	t_simulation	*sim; //maybe not a pointer
 
 	if (argc == 5 || argc == 6)
 	{
-		data = (t_simulation *)malloc(sizeof(t_simulation));
-		if (!data)
+		sim = (t_simulation *)malloc(sizeof(t_simulation));
+		if (!sim)
 		{
 			printf("Error: malloc failed\n");
 			return (0);
 		}
-		if (init_simulation(data, argc, argv) == 0)
+		if (init_simulation(sim, argc, argv) == 0)
 		{
-			free(data);
-			//free_struct(data);
+			free(sim);
+			//free_struct(sim);
 			return (0);
 		}
-		free_struct(data);
+		free_struct(sim);
 	}
 	else
 	{

@@ -1,3 +1,13 @@
+#include "philo.h"
+
+void	write_message(char *str, t_philosopher *philo)
+{
+	// if (philo->data->is_dead == 0)
+	// 	printf("%ld %d %s\n", get_time() - philo->start_time, philo->id, str);
+
+	printf("%ld %d %s\n", get_time(), philo->id, str);
+}
+
 int	ft_atoi(const char *str)
 {
 	int	result;
@@ -21,4 +31,15 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (result * sign);
+}
+
+long	get_time(void)
+{
+	struct timeval	time;
+	long			ms;
+
+	gettimeofday(&time, NULL);
+	ms = time.tv_sec * 1000;
+	ms += time.tv_usec / 1000;
+	return (ms);
 }
