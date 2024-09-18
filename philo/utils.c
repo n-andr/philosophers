@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/18 22:40:58 by nandreev          #+#    #+#             */
+/*   Updated: 2024/09/18 22:41:00 by nandreev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void	write_message(char *str, t_philosopher *philo)
+void	write_status(char *str, t_philosopher *philo)
 {
 	// if (philo->data->is_dead == 0)
 	// 	printf("%ld %d %s\n", get_time() - philo->start_time, philo->id, str);
 
-	printf("%ld %d %s\n", get_time(), philo->id, str);
+	printf("%ld %d %s\n", get_time() - philo->initiation_time, philo->id, str);
 }
 
 int	ft_atoi(const char *str)

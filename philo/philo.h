@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/18 22:40:49 by nandreev          #+#    #+#             */
+/*   Updated: 2024/09/19 00:02:28 by nandreev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
@@ -11,12 +23,13 @@ typedef struct s_simulation t_simulation;
 typedef struct	s_philosopher
 {
 	int		id;
-	int	times_eaten;
-    long last_meal_time;
-	t_simulation *sim;
+	int		times_eaten;
+	long	initiation_time;
+    long 	last_meal_time;
+	t_simulation 	*sim;
 	pthread_mutex_t left_fork;
 	pthread_mutex_t right_fork;
-	pthread_t thread;
+	pthread_t 		thread;
 }				t_philosopher;
 
 typedef struct	s_simulation
@@ -25,6 +38,7 @@ typedef struct	s_simulation
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
+	//int		is_dead;
 	//int		num_eat;
 	int		must_eat_count;
 	pthread_mutex_t *forks;
@@ -36,8 +50,8 @@ typedef struct	s_simulation
 //routine
 void	*routine(void *arg);
 //utils
-void	write_message(char *str, t_philosopher *philo);
-int	ft_atoi(const char *str);
+void	write_status(char *str, t_philosopher *philo);
+int		ft_atoi(const char *str);
 long	get_time(void);
 
 //free
