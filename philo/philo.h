@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:49 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/19 00:02:28 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:01:17 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ typedef struct	s_simulation
 	//int		is_dead;
 	//int		num_eat;
 	int		must_eat_count;
+	int 	fork_availability;
 	pthread_mutex_t *forks;
-	//pthread_mutex_t print_lock; for writing in stdout
+	pthread_mutex_t print_lock; //for writing in stdout (pthread_mutex_t write;)
 	t_philosopher	*philosopher;
 }				t_simulation;
 
