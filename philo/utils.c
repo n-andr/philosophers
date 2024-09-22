@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:58 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/22 23:22:43 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/23 01:02:29 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	write_status(char *str, t_philosopher *philo)
 {
 	//pthread_mutex_lock(&philo->sim->print_lock); // maybe move to routine
-	if (philo->sim->is_dead == 0)
+	if (philo->sim->is_dead != 1)
 		printf("%ld %d %s\n", get_time() - philo->initiation_time, philo->id + 1, str);
 	// pthread_mutex_unlock(&philo->sim->print_lock); // maybe move to routine
 }

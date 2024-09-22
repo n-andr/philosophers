@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/22 23:20:08 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/23 00:38:58 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,6 @@ int	create_philo(t_simulation *sim, t_philosopher *philo)
 		// {
 		// 	sim->philosopher[i].right_fork = sim->forks[i + 1];
 		// }
-		write_status("created", &philo[i]); //delete
 		//pthread_create(&philo[i].thread, NULL, routine, &sphilo[i]); //check if == 0
 		i++;
 	}
@@ -150,6 +149,7 @@ int	init_simulation(t_simulation *sim, int argc, char **argv)
 	sim->time_to_die = ft_atoi(argv[2]);
 	sim->time_to_eat = ft_atoi(argv[3]);
 	sim->time_to_sleep = ft_atoi(argv[4]);
+	sim->ate_enouth = 0;
 	// sim->forks = malloc(sizeof(pthread_mutex_t) * sim->num_philo);
 	// if (!sim->forks)
 	// {

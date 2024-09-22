@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:49 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/22 16:43:36 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/23 00:23:36 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct	s_simulation
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
-	int		finished; //	int	philo_finish;
+	int		ate_enouth; //	int	philo_finish;
 	int		is_dead;
 	//int		num_eat;
 	int		must_eat;
