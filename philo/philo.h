@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:49 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/20 12:01:17 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/22 16:43:36 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,6 @@
 # include <sys/time.h>
 
 typedef struct s_simulation t_simulation;
-typedef struct	s_philosopher
-{
-	int		id;
-	int		times_eaten;
-	long	initiation_time;
-    long 	last_meal_time;
-	t_simulation 	*sim;
-	pthread_mutex_t left_fork;
-	pthread_mutex_t right_fork;
-	pthread_t 		thread;
-}				t_philosopher;
 
 typedef struct	s_simulation
 {
@@ -38,24 +27,40 @@ typedef struct	s_simulation
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
-	//int		is_dead;
+	int		finished; //	int	philo_finish;
+	int		is_dead;
 	//int		num_eat;
-	int		must_eat_count;
-	int 	fork_availability;
+	int		must_eat;
+	int 	*fork_status;
 	pthread_mutex_t *forks;
 	pthread_mutex_t print_lock; //for writing in stdout (pthread_mutex_t write;)
-	t_philosopher	*philosopher;
+	pthread_t 		*thread;
+
+	//t_philosopher	*philosopher;
 }				t_simulation;
+
+typedef struct	s_philosopher
+{
+	int		id;
+	int		times_eaten;
+	long	initiation_time;
+    long 	last_meal_time;
+	long	time_passed;
+	t_simulation 	*sim;
+	pthread_mutex_t left_fork;
+	pthread_mutex_t right_fork;
+}				t_philosopher;
 
 
 //routine
 void	*routine(void *arg);
 //utils
+void	wait_threads(t_simulation *sim);
 void	write_status(char *str, t_philosopher *philo);
 int		ft_atoi(const char *str);
 long	get_time(void);
 
 //free
-void	free_struct(t_simulation *data);
+void	free_all(t_simulation *sim);
 
 #endif
