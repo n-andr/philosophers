@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/23 01:02:13 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/23 16:26:51 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,9 @@ int sleep_good(t_philosopher *philo)
 	size_t start_sleeping;
 
 	start_sleeping = get_time();
-	pthread_mutex_lock(&philo->sim->print_lock); // maybe move to routine
+	pthread_mutex_lock(&philo->sim->print_lock);
     write_status("is sleeping", philo);
-	pthread_mutex_unlock(&philo->sim->print_lock); // maybe move to routine
+	pthread_mutex_unlock(&philo->sim->print_lock);
 
 	while (get_time() - start_sleeping < (size_t)philo->sim->time_to_sleep)
 	{
@@ -113,13 +113,13 @@ int sleep_good(t_philosopher *philo)
 
 void eat(t_philosopher *philo)
 {
-    philo->last_meal_time = get_time();  // Update last meal time
+    philo->last_meal_time = get_time() - philo->initiation_time;  // Update last meal time
     if (philo->times_eaten != -1)
 		philo->times_eaten++;
 	pthread_mutex_lock(&philo->sim->print_lock); // maybe move to routine
     write_status("is eating", philo);
 	pthread_mutex_unlock(&philo->sim->print_lock); // maybe move to routine
-    usleep(philo->sim->time_to_eat);  // Simulate eating
+    usleep(philo->sim->time_to_eat * 1000);  // Simulate eating
 	//philo->last_meal_time = get_time();  // Update last meal time
 	pthread_mutex_unlock(&philo->left_fork);
 	philo->sim->fork_status[philo->id] = 0;
