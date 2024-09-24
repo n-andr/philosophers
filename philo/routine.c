@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/24 23:59:18 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/25 01:44:44 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,8 @@ void eat(t_philosopher *philo)
 	pthread_mutex_lock(&philo->sim->print_lock); // maybe move to routine
     write_status("is eating", philo);
 	pthread_mutex_unlock(&philo->sim->print_lock); // maybe move to routine
-    usleep(philo->sim->time_to_eat * 1000);  // Simulate eating
+    //change usleep to sleep_good to check if philo is dead
+	usleep(philo->sim->time_to_eat * 1000);  // Simulate eating
 	//philo->last_meal_time = get_time();  // Update last meal time
 	pthread_mutex_lock(&philo->left_fork);
 	philo->sim->fork_status[philo->id] = 0;
