@@ -613,3 +613,150 @@ c3a4c1% valgrind --tool=helgrind ./philo 1 800 200 200 > valgrind_report.txt
    For lists of detected and suppressed errors, rerun with: -s
    ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
 
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+3 100 80 10   
+no fork status
+
+
+
+root@10cbcb877016:/42-core/philosophers/philo# make re; valgrind --tool=helgrind ./philo 3 100 80 10
+rm -rf main.o routine.o utils.o free.o
+rm -f philo
+cc -Wall -Wextra -Werror   -c -o main.o main.c
+cc -Wall -Wextra -Werror   -c -o routine.o routine.c
+cc -Wall -Wextra -Werror   -c -o utils.o utils.c
+cc -Wall -Wextra -Werror   -c -o free.o free.c
+cc -Wall -Wextra -Werror main.o routine.o utils.o free.o -o philo
+==1455== Helgrind, a thread error detector
+==1455== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==1455== Using Valgrind-3.21.0 and LibVEX; rerun with -h for copyright info
+==1455== Command: ./philo 3 100 80 10
+==1455== 
+45 2 has taken a fork
+86 2 has taken a fork
+91 2 is eating
+102 1 died
+==1455== ---Thread-Announcement------------------------------------------
+==1455== 
+==1455== Thread #4 was created
+==1455==    at 0x498D2D3: clone (clone.S:76)
+==1455==    by 0x498D442: __clone_internal_fallback (clone-internal.c:71)
+==1455==    by 0x498D442: __clone_internal (clone-internal.c:117)
+==1455==    by 0x48FC6EF: create_thread (pthread_create.c:297)
+==1455==    by 0x48FD197: pthread_create@@GLIBC_2.34 (pthread_create.c:833)
+==1455==    by 0x48515F5: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x10934E: strart_threads (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109939: main (in /42-core/philosophers/philo/philo)
+==1455== 
+==1455== ---Thread-Announcement------------------------------------------
+==1455== 
+==1455== Thread #2 was created
+==1455==    at 0x498D2D3: clone (clone.S:76)
+==1455==    by 0x498D442: __clone_internal_fallback (clone-internal.c:71)
+==1455==    by 0x498D442: __clone_internal (clone-internal.c:117)
+==1455==    by 0x48FC6EF: create_thread (pthread_create.c:297)
+==1455==    by 0x48FD197: pthread_create@@GLIBC_2.34 (pthread_create.c:833)
+==1455==    by 0x48515F5: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x10934E: strart_threads (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109939: main (in /42-core/philosophers/philo/philo)
+==1455== 
+==1455== ----------------------------------------------------------------
+==1455== 
+==1455== Possible data race during read of size 4 at 0x1FFF000374 by thread #4
+==1455== Locks held: none
+==1455==    at 0x109E60: routine (in /42-core/philosophers/philo/philo)
+==1455==    by 0x48517FA: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x48FCAD9: start_thread (pthread_create.c:444)
+==1455==    by 0x498D2E3: clone (clone.S:100)
+==1455== 
+==1455== This conflicts with a previous write of size 4 by thread #2
+==1455== Locks held: none
+==1455==    at 0x109B2E: dead_check (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109BCD: pick_up_left_fork (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109E0A: routine (in /42-core/philosophers/philo/philo)
+==1455==    by 0x48517FA: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x48FCAD9: start_thread (pthread_create.c:444)
+==1455==    by 0x498D2E3: clone (clone.S:100)
+==1455==  Address 0x1fff000374 is on thread #1's stack
+==1455==  in frame #4, created by main (???:)
+==1455== 
+==1455== ---Thread-Announcement------------------------------------------
+==1455== 
+==1455== Thread #3 was created
+==1455==    at 0x498D2D3: clone (clone.S:76)
+==1455==    by 0x498D442: __clone_internal_fallback (clone-internal.c:71)
+==1455==    by 0x498D442: __clone_internal (clone-internal.c:117)
+==1455==    by 0x48FC6EF: create_thread (pthread_create.c:297)
+==1455==    by 0x48FD197: pthread_create@@GLIBC_2.34 (pthread_create.c:833)
+==1455==    by 0x48515F5: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x10934E: strart_threads (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109939: main (in /42-core/philosophers/philo/philo)
+==1455== 
+==1455== ----------------------------------------------------------------
+==1455== 
+==1455==  Lock at 0x1FFF000390 was first observed
+==1455==    at 0x4852F6B: pthread_mutex_init (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x109618: init_forks (in /42-core/philosophers/philo/philo)
+==1455==    by 0x1098D6: main (in /42-core/philosophers/philo/philo)
+==1455==  Address 0x1fff000390 is on thread #1's stack
+==1455==  in frame #4, created by main (???:)
+==1455== 
+==1455== Possible data race during read of size 4 at 0x1FFF000374 by thread #3
+==1455== Locks held: 1, at address 0x1FFF000390
+==1455==    at 0x109E8B: write_status (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109CAF: sleep_good (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109E3F: routine (in /42-core/philosophers/philo/philo)
+==1455==    by 0x48517FA: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x48FCAD9: start_thread (pthread_create.c:444)
+==1455==    by 0x498D2E3: clone (clone.S:100)
+==1455== 
+==1455== This conflicts with a previous write of size 4 by thread #2
+==1455== Locks held: none
+==1455==    at 0x109B2E: dead_check (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109BCD: pick_up_left_fork (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109E0A: routine (in /42-core/philosophers/philo/philo)
+==1455==    by 0x48517FA: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x48FCAD9: start_thread (pthread_create.c:444)
+==1455==    by 0x498D2E3: clone (clone.S:100)
+==1455==  Address 0x1fff000374 is on thread #1's stack
+==1455==  in frame #4, created by main (???:)
+==1455== 
+==1455== ----------------------------------------------------------------
+==1455== 
+==1455==  Lock at 0x1FFF000390 was first observed
+==1455==    at 0x4852F6B: pthread_mutex_init (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x109618: init_forks (in /42-core/philosophers/philo/philo)
+==1455==    by 0x1098D6: main (in /42-core/philosophers/philo/philo)
+==1455==  Address 0x1fff000390 is on thread #1's stack
+==1455==  in frame #4, created by main (???:)
+==1455== 
+==1455== Possible data race during read of size 4 at 0x1FFF000374 by thread #3
+==1455== Locks held: 1, at address 0x1FFF000390
+==1455==    at 0x109A96: dead_check (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109CD1: sleep_good (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109E3F: routine (in /42-core/philosophers/philo/philo)
+==1455==    by 0x48517FA: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x48FCAD9: start_thread (pthread_create.c:444)
+==1455==    by 0x498D2E3: clone (clone.S:100)
+==1455== 
+==1455== This conflicts with a previous write of size 4 by thread #2
+==1455== Locks held: none
+==1455==    at 0x109B2E: dead_check (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109BCD: pick_up_left_fork (in /42-core/philosophers/philo/philo)
+==1455==    by 0x109E0A: routine (in /42-core/philosophers/philo/philo)
+==1455==    by 0x48517FA: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==1455==    by 0x48FCAD9: start_thread (pthread_create.c:444)
+==1455==    by 0x498D2E3: clone (clone.S:100)
+==1455==  Address 0x1fff000374 is on thread #1's stack
+==1455==  in frame #4, created by main (???:)
+==1455== 
+==1455== 
+==1455== Use --history-level=approx or =none to gain increased speed, at
+==1455== the cost of reduced accuracy of conflicting-access information
+==1455== For lists of detected and suppressed errors, rerun with: -s
+==1455== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 17 from 17)

@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/24 22:34:25 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/24 22:46:36 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,12 @@ int pick_up_left_fork(t_philosopher *philo)
 {
 	while (dead_check(philo) != 1)
 	{
-		if (philo->sim->fork_status[philo->id] == 0)
+		// if (philo->sim->fork_status[philo->id] == 0)
+		// {
+		// 	philo->sim->fork_status[philo->id] = 1;
+		if (pthread_mutex_lock(&philo->left_fork) == 0)
 		{
-			philo->sim->fork_status[philo->id] = 1;
-			pthread_mutex_lock(&philo->left_fork);
+			//pthread_mutex_lock(&philo->left_fork);
 			pthread_mutex_lock(&philo->sim->print_lock);
 			write_status("has taken a fork", philo);
 			pthread_mutex_unlock(&philo->sim->print_lock);
@@ -81,25 +83,27 @@ int pick_up_left_fork(t_philosopher *philo)
 
 int pick_up_right_fork(t_philosopher *philo)
 {
-	int right_fork;
+	//int right_fork;
 
-	right_fork = (philo->id + 1) % philo->sim->num_philo;
+	//right_fork = (philo->id + 1) % philo->sim->num_philo;
 	while (dead_check(philo) != 1)
 	{
-		if (philo->sim->fork_status[right_fork] == 0)
+		// if (philo->sim->fork_status[right_fork] == 0)
+		// {
+		// 	philo->sim->fork_status[right_fork] = 1;
+		if (pthread_mutex_lock(&philo->right_fork) == 0)
 		{
-			philo->sim->fork_status[right_fork] = 1;
-			pthread_mutex_lock(&philo->right_fork);	
+			//pthread_mutex_lock(&philo->right_fork);	
 			pthread_mutex_lock(&philo->sim->print_lock);	
 			write_status("has taken a fork", philo);
-			write_status("philo->right_fork %d", philo->id); //delete
+			//write_status("philo->right_fork %d", philo->id); //delete
 			pthread_mutex_unlock(&philo->sim->print_lock);
 			return (0);
 		}
 		//usleep(100);
 	}
 	pthread_mutex_unlock(&philo->left_fork);
-	philo->sim->fork_status[philo->id] = 0;
+	//philo->sim->fork_status[philo->id] = 0;
 	return (1);
 }
 
@@ -132,9 +136,9 @@ void eat(t_philosopher *philo)
     usleep(philo->sim->time_to_eat * 1000);  // Simulate eating
 	//philo->last_meal_time = get_time();  // Update last meal time
 	pthread_mutex_unlock(&philo->left_fork);
-	philo->sim->fork_status[philo->id] = 0;
+	//philo->sim->fork_status[philo->id] = 0;
 	pthread_mutex_unlock(&philo->right_fork);
-	philo->sim->fork_status[(philo->id + 1) % philo->sim->num_philo] = 0;
+	//philo->sim->fork_status[(philo->id + 1) % philo->sim->num_philo] = 0;
 }
 
 void	*routine(void *arg)
