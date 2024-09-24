@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/23 00:38:58 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/24 01:28:43 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ void init_forks(t_simulation *sim)
 		return ;
 	}
 	pthread_mutex_init(&sim->print_lock, NULL);
-
 	while (i < sim->num_philo)
 	{
 		pthread_mutex_init(&sim->forks[i], NULL);
