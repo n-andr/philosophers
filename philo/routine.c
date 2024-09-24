@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/24 22:34:25 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/24 23:59:18 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ int	eaten_enough(t_philosopher *philo)
 	if (philo->sim->must_eat != -1 
 		&& philo->sim->ate_enouth == philo->sim->num_philo)
 	{
+		pthread_mutex_lock(&philo->sim->dead_check_lock);
 		philo->sim->is_dead = 1;
+		pthread_mutex_unlock(&philo->sim->dead_check_lock);
 		return (1);
 	}
 	return (0);
@@ -41,17 +43,24 @@ int dead_check(t_philosopher *philo)
 {
 	pthread_mutex_lock(&philo->sim->print_lock);
 	eaten_enough(philo);
+	pthread_mutex_lock(&philo->sim->dead_check_lock);
 	if (philo->sim->is_dead == 1)
 	{
+		pthread_mutex_unlock(&philo->sim->dead_check_lock);
 		pthread_mutex_unlock(&philo->sim->print_lock);
 		return (1);
 	}
+	pthread_mutex_unlock(&philo->sim->dead_check_lock);
+
 	philo->time_passed = get_time() - philo->initiation_time - philo->last_meal_time;
 	if (philo->time_passed >= philo->sim->time_to_die)
 	{
 		write_status("died", philo);
 		pthread_mutex_unlock(&philo->sim->print_lock);
+		pthread_mutex_lock(&philo->sim->dead_check_lock);
 		philo->sim->is_dead = 1;
+		pthread_mutex_unlock(&philo->sim->dead_check_lock);
+
 		return (1); 
 	}
 	pthread_mutex_unlock(&philo->sim->print_lock);
@@ -65,16 +74,20 @@ int pick_up_left_fork(t_philosopher *philo)
 {
 	while (dead_check(philo) != 1)
 	{
+		pthread_mutex_lock(&philo->left_fork);
 		if (philo->sim->fork_status[philo->id] == 0)
 		{
 			philo->sim->fork_status[philo->id] = 1;
-			pthread_mutex_lock(&philo->left_fork);
+			pthread_mutex_unlock(&philo->left_fork);
+
+			// pthread_mutex_lock(&philo->left_fork);
 			pthread_mutex_lock(&philo->sim->print_lock);
 			write_status("has taken a fork", philo);
 			pthread_mutex_unlock(&philo->sim->print_lock);
 			return (0);
 		}
-		//usleep(100);
+		pthread_mutex_unlock(&philo->left_fork);
+		usleep(100);
 	}
 	return (1);
 }
@@ -86,17 +99,23 @@ int pick_up_right_fork(t_philosopher *philo)
 	right_fork = (philo->id + 1) % philo->sim->num_philo;
 	while (dead_check(philo) != 1)
 	{
+		pthread_mutex_lock(&philo->right_fork);	
 		if (philo->sim->fork_status[right_fork] == 0)
 		{
 			philo->sim->fork_status[right_fork] = 1;
-			pthread_mutex_lock(&philo->right_fork);	
+			pthread_mutex_unlock(&philo->right_fork);
+
+			// pthread_mutex_lock(&philo->right_fork);	
 			pthread_mutex_lock(&philo->sim->print_lock);	
 			write_status("has taken a fork", philo);
-			write_status("philo->right_fork %d", philo->id); //delete
+			//write_status("philo->right_fork %d", philo->id); //delete
 			pthread_mutex_unlock(&philo->sim->print_lock);
 			return (0);
 		}
-		//usleep(100);
+		pthread_mutex_unlock(&philo->right_fork);
+
+
+		usleep(100);
 	}
 	pthread_mutex_unlock(&philo->left_fork);
 	philo->sim->fork_status[philo->id] = 0;
@@ -131,10 +150,12 @@ void eat(t_philosopher *philo)
 	pthread_mutex_unlock(&philo->sim->print_lock); // maybe move to routine
     usleep(philo->sim->time_to_eat * 1000);  // Simulate eating
 	//philo->last_meal_time = get_time();  // Update last meal time
-	pthread_mutex_unlock(&philo->left_fork);
+	pthread_mutex_lock(&philo->left_fork);
 	philo->sim->fork_status[philo->id] = 0;
-	pthread_mutex_unlock(&philo->right_fork);
+	pthread_mutex_unlock(&philo->left_fork);
+	pthread_mutex_lock(&philo->right_fork);
 	philo->sim->fork_status[(philo->id + 1) % philo->sim->num_philo] = 0;
+	pthread_mutex_unlock(&philo->right_fork);
 }
 
 void	*routine(void *arg)
@@ -144,7 +165,7 @@ void	*routine(void *arg)
 	philo = (t_philosopher *)arg;
 	if (philo->id % 2 == 0) // Simulate a delay for even philosophers
 		usleep(100); // maybe use sleep_good() 
-	while (philo->sim->is_dead == 0)
+	while (dead_check(philo) != 1)
 	{
 		if (pick_up_left_fork(philo) == 1 
 			|| pick_up_right_fork(philo) == 1)

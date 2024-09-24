@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/24 01:28:43 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/25 00:01:09 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void init_forks(t_simulation *sim)
 		return ;
 	}
 	pthread_mutex_init(&sim->print_lock, NULL);
+	pthread_mutex_init(&sim->dead_check_lock, NULL);
 	while (i < sim->num_philo)
 	{
 		pthread_mutex_init(&sim->forks[i], NULL);
@@ -149,6 +150,7 @@ int	init_simulation(t_simulation *sim, int argc, char **argv)
 	sim->time_to_eat = ft_atoi(argv[3]);
 	sim->time_to_sleep = ft_atoi(argv[4]);
 	sim->ate_enouth = 0;
+	sim->is_dead = 0;
 	// sim->forks = malloc(sizeof(pthread_mutex_t) * sim->num_philo);
 	// if (!sim->forks)
 	// {
