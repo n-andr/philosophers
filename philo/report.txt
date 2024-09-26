@@ -1,0 +1,6 @@
+7 1 has taken a fork
+10 1 has taken a fork
+10 1 is eating
+10 1 is eating
+11 2 has taken a fork
+800 2 died

@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/25 17:10:33 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/26 19:23:48 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,16 @@
 
 void think(t_philosopher *philo)
 {
+	//philo->time_passed = get_time() - philo->initiation_time - philo->last_meal_time;
+
 	pthread_mutex_lock(&philo->sim->print_lock);
 	write_status("is thinking", philo);
 	pthread_mutex_unlock(&philo->sim->print_lock);
+	while (philo->sim->time_to_die > get_time() - (philo->last_meal_time - philo->initiation_time - philo->sim->time_to_eat)
+		&& dead_check(philo) != 1)
+	{
+		usleep(100);
+	}
 }
 
 // 1 - dead
@@ -113,8 +120,6 @@ int pick_up_right_fork(t_philosopher *philo)
 			return (0);
 		}
 		pthread_mutex_unlock(&philo->right_fork);
-
-
 		usleep(100);
 	}
 	pthread_mutex_lock(&philo->left_fork);
@@ -123,34 +128,112 @@ int pick_up_right_fork(t_philosopher *philo)
 	return (1);
 }
 
-//int get_forks(t_philosopher *philo)
-// {
-// 	bool got_left_fork;
-// 	bool got_right_fork;
+int left_fork(t_philosopher *philo)
+{
+	pthread_mutex_lock(&philo->left_fork);
+	if (philo->sim->fork_status[philo->id] == 0)
+	{
+		philo->sim->fork_status[philo->id] = 1;
+		pthread_mutex_unlock(&philo->left_fork);
+		pthread_mutex_lock(&philo->sim->print_lock);
+		write_status("has taken a fork", philo);
+		pthread_mutex_unlock(&philo->sim->print_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->left_fork);
+	return (0);
+}
 
-// 	got_left_fork = false;
-// 	got_right_fork = false;
-// 	while (dead_check(philo) != 1)
-// 	{
-// 		if (got_left_fork == false)
-// 		{
-// 			pthread_mutex_lock(&philo->left_fork);
-// 			if (philo->sim->fork_status[philo->id] == 0)
-// 			{
-// 				philo->sim->fork_status[philo->id] = 1;
-// 				pthread_mutex_unlock(&philo->left_fork);
-// 				got_left_fork = true;
-// 				pthread_mutex_lock(&philo->sim->print_lock);
-// 				write_status("has taken a fork", philo);
-// 				pthread_mutex_unlock(&philo->sim->print_lock);
-// 			}
-// 			else
-// 				pthread_mutex_unlock(&philo->left_fork);
-// 		}
-// 		return (0);
-// 	}
-// 	return (1);
-// }
+int right_fork(t_philosopher *philo)
+{
+	int right_fork;
+
+	right_fork = (philo->id + 1) % philo->sim->num_philo;
+	pthread_mutex_lock(&philo->right_fork);
+	if (philo->sim->fork_status[right_fork] == 0)
+	{
+		philo->sim->fork_status[right_fork] = 1;
+		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_lock(&philo->sim->print_lock);
+		write_status("has taken a fork", philo);
+		pthread_mutex_unlock(&philo->sim->print_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->right_fork);
+	return (0);
+}
+
+int get_forks(t_philosopher *philo)
+{
+	int got_left_fork;
+	int got_right_fork;
+	// int right_fork;
+
+	// right_fork = (philo->id + 1) % philo->sim->num_philo;
+	got_left_fork = 0;
+	got_right_fork = 0;
+	while (dead_check(philo) != 1)
+	{
+		if (philo->id % 2 == 0)
+		{
+			if (got_left_fork == 0)
+			{
+				got_left_fork = left_fork(philo);
+			}
+			if (got_right_fork == 0)
+			{
+				got_right_fork = right_fork(philo);
+			}
+		}
+		else
+		{
+			if (got_right_fork == 0)
+			{
+				got_right_fork = right_fork(philo);
+			}
+			if (got_left_fork == 0)
+			{
+				got_left_fork = left_fork(philo);
+			}
+		}
+			
+		// if (got_left_fork == 0)
+		// {
+		// 	// pthread_mutex_lock(&philo->left_fork);
+		// 	// if (philo->sim->fork_status[philo->id] == 0)
+		// 	// {
+		// 	// 	philo->sim->fork_status[philo->id] = 1;
+		// 	// 	pthread_mutex_unlock(&philo->left_fork);
+		// 	// 	got_left_fork = 1;
+		// 	// 	pthread_mutex_lock(&philo->sim->print_lock);
+		// 	// 	write_status("has taken a fork", philo);
+		// 	// 	pthread_mutex_unlock(&philo->sim->print_lock);
+		// 	// }
+		// 	// else
+		// 	// 	pthread_mutex_unlock(&philo->left_fork);
+		// 	got_left_fork = left_fork(philo);
+		// }
+		// if (got_right_fork == 0)
+		// {
+		// 	// pthread_mutex_lock(&philo->right_fork);
+		// 	// if (philo->sim->fork_status[right_fork] == 0) //
+		// 	// {
+		// 	// 	philo->sim->fork_status[right_fork] = 1; //
+		// 	// 	pthread_mutex_unlock(&philo->right_fork);
+		// 	// 	got_right_fork = 1;
+		// 	// 	pthread_mutex_lock(&philo->sim->print_lock);
+		// 	// 	write_status("has taken a fork", philo);
+		// 	// 	pthread_mutex_unlock(&philo->sim->print_lock);
+		// 	// }
+		// 	// else
+		// 	// 	pthread_mutex_unlock(&philo->right_fork);
+		// 	got_right_fork = right_fork(philo);
+		// }
+		if (got_left_fork == 1 && got_right_fork == 1)
+			return (0);
+	}
+	return (1);
+}
 
 int sleep_good(t_philosopher *philo, int duration, char *msg)
 {
@@ -198,11 +281,13 @@ void	*routine(void *arg)
 
 	philo = (t_philosopher *)arg;
 	if (philo->id % 2 == 0) // Simulate a delay for even philosophers
-		usleep(500); // maybe use sleep_good() 
+		usleep(100); // maybe use sleep_good() 
 	while (dead_check(philo) != 1)
 	{
-		if (pick_up_left_fork(philo) == 1 
-			|| pick_up_right_fork(philo) == 1)
+		// if (pick_up_left_fork(philo) == 1 
+		// 	|| pick_up_right_fork(philo) == 1)
+		// 	return (NULL);
+		if (get_forks(philo) == 1)
 			return (NULL);
 		eat(philo);
 		if (sleep_good(philo, philo->sim->time_to_sleep, "is sleeping") == 1)

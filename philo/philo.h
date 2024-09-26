@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:49 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/24 23:51:28 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/26 19:18:42 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ typedef struct	s_philosopher
 
 //routine
 void	*routine(void *arg);
+int dead_check(t_philosopher *philo);
+
 //utils
 void	wait_threads(t_simulation *sim);
 void	write_status(char *str, t_philosopher *philo);

@@ -613,3 +613,5 @@ c3a4c1% valgrind --tool=helgrind ./philo 1 800 200 200 > valgrind_report.txt
    For lists of detected and suppressed errors, rerun with: -s
    ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
 
+7 1 has taken a fork
+800 1 died
