@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
+/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/26 19:23:48 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/09/27 02:12:33 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,22 @@
 
 void think(t_philosopher *philo)
 {
+	int time_to_think;
 	//philo->time_passed = get_time() - philo->initiation_time - philo->last_meal_time;
 
 	pthread_mutex_lock(&philo->sim->print_lock);
 	write_status("is thinking", philo);
 	pthread_mutex_unlock(&philo->sim->print_lock);
-	while (philo->sim->time_to_die > get_time() - (philo->last_meal_time - philo->initiation_time - philo->sim->time_to_eat)
-		&& dead_check(philo) != 1)
+	time_to_think = philo->sim->time_to_die - philo->sim->time_to_eat - philo->sim->time_to_sleep;
+	// while (philo->sim->time_to_die > get_time() - (philo->last_meal_time - philo->initiation_time - philo->sim->time_to_eat)
+	// 	&& dead_check(philo) != 1)
+	// {
+	// 	usleep(100);
+	// }
+
+	if (time_to_think > 0)
 	{
-		usleep(100);
+		usleep(1000);
 	}
 }
 
@@ -281,7 +288,7 @@ void	*routine(void *arg)
 
 	philo = (t_philosopher *)arg;
 	if (philo->id % 2 == 0) // Simulate a delay for even philosophers
-		usleep(100); // maybe use sleep_good() 
+		usleep(1000); // maybe use sleep_good() 
 	while (dead_check(philo) != 1)
 	{
 		// if (pick_up_left_fork(philo) == 1 
