@@ -3,67 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/25 00:01:09 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/18 19:49:06 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* # Number of philosophers and forks
-NUM_PHILOSOPHERS = 5
-
-# Create a list to represent forks, each initially available
-forks = [available for _ in range(NUM_PHILOSOPHERS)]
-
-# Function for a philosopher to pick up forks
-function pick_up_forks(philosopher_id):
-    left_fork = philosopher_id
-    right_fork = (philosopher_id + 1) % NUM_PHILOSOPHERS
-
-    # Ensure mutual exclusion
-    acquire_lock()
-
-    # Pick up left fork
-    while forks[left_fork] == not available:
-        wait()
-    forks[left_fork] = not available
-
-    # Pick up right fork
-    while forks[right_fork] == not available:
-        wait()
-    forks[right_fork] = not available
-
-    release_lock()
-
-# Function for a philosopher to put down forks
-function put_down_forks(philosopher_id):
-    left_fork = philosopher_id
-    right_fork = (philosopher_id + 1) % NUM_PHILOSOPHERS
-
-    # Ensure mutual exclusion
-    acquire_lock()
-
-    # Put down left fork
-    forks[left_fork] = available
-
-    # Put down right fork
-    forks[right_fork] = available
-
-    release_lock()
-
-# Function representing philosopher's behavior
-function philosopher(philosopher_id):
-    while true:
-        think(philosopher_id)
-        pick_up_forks(philosopher_id)
-        eat(philosopher_id)
-        put_down_forks(philosopher_id)
-
-# Initialize philosophers
-for i from 0 to NUM_PHILOSOPHERS - 1:
-    start_thread(philosopher, i)
-*/
 #include "philo.h"
 
 void strart_threads(t_simulation *sim, t_philosopher *philo)
@@ -136,48 +82,17 @@ void init_forks(t_simulation *sim)
 
 int	init_simulation(t_simulation *sim, int argc, char **argv)
 {
-	// int	i;
-
-	// sim = (t_simulation *)malloc(sizeof(t_simulation));
-	// if (!sim)
-	// {
-	// 	printf("Error: malloc failed\n");
-	// 	return (0);
-	// }
-
 	sim->num_philo = ft_atoi(argv[1]);
 	sim->time_to_die = ft_atoi(argv[2]);
 	sim->time_to_eat = ft_atoi(argv[3]);
 	sim->time_to_sleep = ft_atoi(argv[4]);
 	sim->ate_enouth = 0;
 	sim->is_dead = 0;
-	// sim->forks = malloc(sizeof(pthread_mutex_t) * sim->num_philo);
-	// if (!sim->forks)
-	// {
-	// 	printf("Error: malloc failed\n");
-	// 	return (0);
-	// }
-	// sim->philosopher = malloc(sizeof(t_philosopher) * sim->num_philo);
-	// if (!sim->philosopher)
-	// {
-	// 	free(sim->forks);
-	// 	printf("Error: malloc failed\n");
-	// 	return (0);
-	// }
-	// create_philo_threads(sim);
-	// //initialize forks??
-	// // add error handling for atoi, if letters etc
+	
 	if (argc == 6)
 		sim->must_eat = ft_atoi(argv[5]);
 	else
 		sim->must_eat = -1;
-	// i = 0;
-    // while (i < sim->num_philo)
-    // {
-    //     pthread_mutex_init(&sim->forks[i], NULL);
-    //     i++;
-    // }
-    //pthread_mutex_init(&sim->print_lock, NULL);
 	return (1);
 }
 
@@ -216,7 +131,7 @@ int arg_check(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	t_simulation	sim; //maybe not a pointer
+	t_simulation	sim; 
 	t_philosopher	*philo;
 
 	if (arg_check(argc, argv) == 0)
