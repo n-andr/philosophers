@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/10/18 19:49:06 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/21 18:11:01 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void init_forks(t_simulation *sim)
 	while (i < sim->num_philo)
 	{
 		pthread_mutex_init(&sim->forks[i], NULL);
+		//printf("init fork %d\n", i);
 		sim->fork_status[i] = 0;
 		i++;
 	}
