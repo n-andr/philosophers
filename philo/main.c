@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/10/21 18:11:01 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:16:24 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,10 @@ int	create_philo(t_simulation *sim, t_philosopher *philo)
 		philo[i].sim = sim;
 		philo[i].left_fork = sim->forks[i];
 		philo[i].right_fork = sim->forks[(i + 1) % sim->num_philo];
-		// if (i + 1 == sim->num_philo)
-		// {
-		// 	sim->philosopher[i].right_fork = sim->forks[0];
-		// }
-		// else
-		// {
-		// 	sim->philosopher[i].right_fork = sim->forks[i + 1];
-		// }
-		//pthread_create(&philo[i].thread, NULL, routine, &sphilo[i]); //check if == 0
+		printf("&philo->left_fork %d adress %p:\n", philo[i].id, &philo[i].left_fork); //del
+		printf("&philo->right_fork %d adress %p:\n", (i + 1) % sim->num_philo, &philo[i].right_fork); //del
+		printf("fork %d adress %p:\n", i, &sim->forks[i]); //del
+
 		i++;
 	}
 	return (1);
@@ -71,11 +66,13 @@ void init_forks(t_simulation *sim)
 		return ;
 	}
 	pthread_mutex_init(&sim->print_lock, NULL);
+
 	pthread_mutex_init(&sim->dead_check_lock, NULL);
+
 	while (i < sim->num_philo)
 	{
 		pthread_mutex_init(&sim->forks[i], NULL);
-		//printf("init fork %d\n", i);
+		printf("init fork %d adress %p:\n", i, &sim->forks[i]);
 		sim->fork_status[i] = 0;
 		i++;
 	}
