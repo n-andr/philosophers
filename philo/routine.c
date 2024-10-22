@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/10/22 23:06:18 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/22 23:36:54 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ void think(t_philosopher *philo)
 	int time_to_think;
 	//philo->time_passed = get_time() - philo->initiation_time - philo->last_meal_time;
 
-	pthread_mutex_lock(&philo->sim->print_lock);
+	// pthread_mutex_lock(&philo->sim->print_lock);
 	write_status("is thinking", philo);
-	pthread_mutex_unlock(&philo->sim->print_lock);
+	// pthread_mutex_unlock(&philo->sim->print_lock);
 	time_to_think = (philo->sim->time_to_die - philo->sim->time_to_eat - philo->sim->time_to_sleep) / 2;
 	// while (philo->sim->time_to_die > get_time() - (philo->last_meal_time - philo->initiation_time - philo->sim->time_to_eat)
 	// 	&& dead_check(philo) != 1)
@@ -66,13 +66,13 @@ int	eaten_enough(t_philosopher *philo)
 
 int dead_check(t_philosopher *philo)
 {
-	pthread_mutex_lock(&philo->sim->print_lock);
+	// pthread_mutex_lock(&philo->sim->print_lock);
 	eaten_enough(philo);
 	pthread_mutex_lock(&philo->sim->dead_check_lock);
 	if (philo->sim->is_dead == 1)
 	{
 		pthread_mutex_unlock(&philo->sim->dead_check_lock);
-		pthread_mutex_unlock(&philo->sim->print_lock);
+		// pthread_mutex_unlock(&philo->sim->print_lock);
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->sim->dead_check_lock);
@@ -81,14 +81,13 @@ int dead_check(t_philosopher *philo)
 	if (philo->time_passed >= philo->sim->time_to_die)
 	{
 		write_status("died", philo);
-		pthread_mutex_unlock(&philo->sim->print_lock);
+		// pthread_mutex_unlock(&philo->sim->print_lock);
 		pthread_mutex_lock(&philo->sim->dead_check_lock);
 		philo->sim->is_dead = 1;
 		pthread_mutex_unlock(&philo->sim->dead_check_lock);
-
 		return (1); 
 	}
-	pthread_mutex_unlock(&philo->sim->print_lock);
+	// pthread_mutex_unlock(&philo->sim->print_lock);
 	return (0);
 }
 
@@ -103,13 +102,13 @@ int left_fork(t_philosopher *philo)
 	{
 		philo->sim->fork_status[philo->id] = 1;
 		
-		pthread_mutex_lock(&philo->sim->print_lock);
+		// pthread_mutex_lock(&philo->sim->print_lock);
 		//printf("&philo->left_fork %d adress %p:\n", philo->id, &philo->left_fork); //del
 
 		//printf("philo[i] = %d, philo->left_fork %d\n",philo->id, philo->id); //delete
-		write_status("has taken a fork", philo);
+		write_status("has taken a left fork", philo);
 
-		pthread_mutex_unlock(&philo->sim->print_lock);
+		// pthread_mutex_unlock(&philo->sim->print_lock);
 		pthread_mutex_unlock(philo->left_fork);
 		return (1);
 	}
@@ -127,12 +126,12 @@ int right_fork(t_philosopher *philo)
 	if (philo->sim->fork_status[right_fork] == 0)
 	{
 		philo->sim->fork_status[right_fork] = 1;
-		pthread_mutex_lock(&philo->sim->print_lock);
+		// pthread_mutex_lock(&philo->sim->print_lock);
 		//printf("&philo->right_fork %d adress %p:\n", right_fork, &philo->right_fork); //del
 
 		//printf("philo[i] = %d, philo->right_fork %d\n", philo->id, right_fork); //delete
-		write_status("has taken a fork", philo);
-		pthread_mutex_unlock(&philo->sim->print_lock);
+		write_status("has taken a right fork", philo);
+		// pthread_mutex_unlock(&philo->sim->print_lock);
 		pthread_mutex_unlock(philo->right_fork);
 		return (1);
 	}
@@ -149,6 +148,7 @@ int get_forks(t_philosopher *philo)
 	// right_fork = (philo->id + 1) % philo->sim->num_philo;
 	got_left_fork = 0;
 	got_right_fork = 0;
+	write_status("get forks start", philo); //DEBUG
 	while (dead_check(philo) != 1)
 	{
 		if (philo->id % 2 == 0)
@@ -173,9 +173,12 @@ int get_forks(t_philosopher *philo)
 				got_left_fork = left_fork(philo);
 			}
 		}
-		if (got_left_fork == 1 && got_right_fork == 1)
+		if (got_left_fork == 1 && got_right_fork == 1) {
+			write_status("got both forks", philo); //DEBUG
 			return (0);
+		}
 	}
+	write_status("get forks: dead", philo); //DEBUG
 	return (1);
 }
 
@@ -186,9 +189,9 @@ int occupied_with(t_philosopher *philo, int duration, char *msg)
 	if (dead_check(philo) == 1)
 		return (1);
 	start_sleeping = get_time();
-	pthread_mutex_lock(&philo->sim->print_lock);
+	// pthread_mutex_lock(&philo->sim->print_lock);
     write_status(msg, philo);
-	pthread_mutex_unlock(&philo->sim->print_lock);
+	// pthread_mutex_unlock(&philo->sim->print_lock);
 
 	while (get_time() - start_sleeping < (size_t)duration)
 	{
@@ -220,7 +223,7 @@ void	*routine(void *arg)
 
 	philo = (t_philosopher *)arg;
 	if (philo->id % 2 == 0) // Simulate a delay for even philosophers
-		usleep(500);
+		usleep(5000);
 	while (dead_check(philo) != 1)
 	{
 		if (get_forks(philo) == 1)
