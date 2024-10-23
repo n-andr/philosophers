@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nandreev <nandreev@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:58 by nandreev          #+#    #+#             */
-/*   Updated: 2024/10/22 23:52:43 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/23 16:13:46 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 void	write_status(char *str, t_philosopher *philo)
 {
-	pthread_mutex_lock(&philo->sim->print_lock); // maybe move to routine
+	pthread_mutex_lock(&philo->sim->print_lock);
 	pthread_mutex_lock(&philo->sim->dead_check_lock);
 	if (philo->sim->is_dead != 1)
-		printf("%ld %d %s\n", get_time() - philo->initiation_time, philo->id + 1, str);
+	{
+		printf("%ld %d %s\n", get_time() - philo->initiation_time, 
+			philo->id + 1, str);
+	}
 	pthread_mutex_unlock(&philo->sim->dead_check_lock);
-	pthread_mutex_unlock(&philo->sim->print_lock); // maybe move to routine
+	pthread_mutex_unlock(&philo->sim->print_lock);
 }
 
 void	wait_threads(t_simulation *sim)
