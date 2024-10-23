@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:27 by nandreev          #+#    #+#             */
-/*   Updated: 2024/10/22 15:16:24 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:35:24 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ int	create_philo(t_simulation *sim, t_philosopher *philo)
 		philo[i].initiation_time = get_time();
 		philo[i].last_meal_time = get_time() - philo[i].initiation_time;
 		philo[i].sim = sim;
-		philo[i].left_fork = sim->forks[i];
-		philo[i].right_fork = sim->forks[(i + 1) % sim->num_philo];
-		printf("&philo->left_fork %d adress %p:\n", philo[i].id, &philo[i].left_fork); //del
-		printf("&philo->right_fork %d adress %p:\n", (i + 1) % sim->num_philo, &philo[i].right_fork); //del
-		printf("fork %d adress %p:\n", i, &sim->forks[i]); //del
+		philo[i].left_fork = &sim->forks[i];
+		philo[i].right_fork = &sim->forks[(i + 1) % sim->num_philo];
+		// printf("&philo->left_fork %d adress %p:\n", philo[i].id, &philo[i].left_fork); //del
+		// printf("&philo->right_fork %d adress %p:\n", (i + 1) % sim->num_philo, &philo[i].right_fork); //del
+		// printf("fork %d adress %p:\n", i, &sim->forks[i]); //del
 
 		i++;
 	}
@@ -72,7 +72,7 @@ void init_forks(t_simulation *sim)
 	while (i < sim->num_philo)
 	{
 		pthread_mutex_init(&sim->forks[i], NULL);
-		printf("init fork %d adress %p:\n", i, &sim->forks[i]);
+		//printf("init fork %d adress %p:\n", i, &sim->forks[i]);
 		sim->fork_status[i] = 0;
 		i++;
 	}

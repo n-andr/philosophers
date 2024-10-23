@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:49 by nandreev          #+#    #+#             */
-/*   Updated: 2024/09/26 19:18:42 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:28:42 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ typedef struct	s_philosopher
     long 	last_meal_time;
 	long	time_passed;
 	t_simulation 	*sim;
-	pthread_mutex_t left_fork;
-	pthread_mutex_t right_fork;
+	pthread_mutex_t *left_fork;
+	pthread_mutex_t *right_fork;
 }				t_philosopher;
 
 

@@ -6,7 +6,7 @@
 /*   By: nandreev <nandreev@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 22:40:32 by nandreev          #+#    #+#             */
-/*   Updated: 2024/10/22 15:15:39 by nandreev         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:42:06 by nandreev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,23 +86,23 @@ int dead_check(t_philosopher *philo)
 
 int left_fork(t_philosopher *philo)
 {
-	pthread_mutex_lock(&philo->left_fork);
+	pthread_mutex_lock(philo->left_fork);
 
 	if (philo->sim->fork_status[philo->id] == 0)
 	{
 		philo->sim->fork_status[philo->id] = 1;
 		
 		pthread_mutex_lock(&philo->sim->print_lock);
-		printf("&philo->left_fork %d adress %p:\n", philo->id, &philo->left_fork); //del
+		//printf("&philo->left_fork %d adress %p:\n", philo->id, &philo->left_fork); //del
 
 		//printf("philo[i] = %d, philo->left_fork %d\n",philo->id, philo->id); //delete
-		write_status("has taken a left fork", philo);
+		write_status("has taken a fork", philo);
 
 		pthread_mutex_unlock(&philo->sim->print_lock);
-		pthread_mutex_unlock(&philo->left_fork);
+		pthread_mutex_unlock(philo->left_fork);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->left_fork);
+	pthread_mutex_unlock(philo->left_fork);
 	return (0);
 }
 
@@ -111,21 +111,21 @@ int right_fork(t_philosopher *philo)
 	int right_fork;
 
 	right_fork = (philo->id + 1) % philo->sim->num_philo;
-	pthread_mutex_lock(&philo->right_fork);
+	pthread_mutex_lock(philo->right_fork);
 
 	if (philo->sim->fork_status[right_fork] == 0)
 	{
 		philo->sim->fork_status[right_fork] = 1;
 		pthread_mutex_lock(&philo->sim->print_lock);
-		printf("&philo->right_fork %d adress %p:\n", right_fork, &philo->right_fork); //del
+		//printf("&philo->right_fork %d adress %p:\n", right_fork, &philo->right_fork); //del
 
 		//printf("philo[i] = %d, philo->right_fork %d\n", philo->id, right_fork); //delete
-		write_status("has taken a right fork", philo);
+		write_status("has taken a fork", philo);
 		pthread_mutex_unlock(&philo->sim->print_lock);
-		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_unlock(philo->right_fork);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->right_fork);
+	pthread_mutex_unlock(philo->right_fork);
 	return (0);
 }
 
@@ -195,12 +195,12 @@ void eat(t_philosopher *philo)
 		philo->times_eaten++;
     //change usleep to sleep_good to check if philo is dead
 	sleep_good(philo, philo->sim->time_to_eat, "is eating");
-	pthread_mutex_lock(&philo->left_fork);
+	pthread_mutex_lock(philo->left_fork);
 	philo->sim->fork_status[philo->id] = 0;
-	pthread_mutex_unlock(&philo->left_fork);
-	pthread_mutex_lock(&philo->right_fork);
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_lock(philo->right_fork);
 	philo->sim->fork_status[(philo->id + 1) % philo->sim->num_philo] = 0;
-	pthread_mutex_unlock(&philo->right_fork);
+	pthread_mutex_unlock(philo->right_fork);
 }
 
 void	*routine(void *arg)
