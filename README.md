@@ -1,2 +1,2 @@
-# philosophers
+# philosophers “The Dining Philosophers Problem”
  
